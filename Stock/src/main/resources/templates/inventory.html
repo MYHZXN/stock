@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>盘点信息</title>
+	
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet"/>
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet"/>
+
+    <link href="/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"
+    	th:href="@{/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css}" rel="stylesheet"/>
+
+    <!-- Data Tables -->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css"
+    	th:href="@{/css/plugins/jqgrid/ui.jqgrid.css}" rel="stylesheet"/>
+
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet"/>
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet"/>
+
+  </head>
+  
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom white-bg">
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <div class="navbar-header">
+                        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                            <i class="fa fa-reorder"></i>
+                        </button>
+                        <a href="/stock/index" class="navbar-brand">Stock</a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">信息管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/good/showGoodList">商品信息</a>
+                                    </li>
+                                    <li><a href="/good/showTypeList">商品类别信息</a>
+                                    </li>
+                                    <li><a href="/good/showUnitList">商品单位信息</a>
+                                    </li>
+                                    <li><a href="/user/showUserList">员工信息</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">仓库管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/instock/showInStockList">入库单据</a>
+                                    </li>
+                                    <li><a href="/outstock/showOutStockList">出库单据</a>
+                                    </li>
+                                    <li><a href="/inventory/showInventoryList">盘点单据</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">分析统计<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/reports/showReports">月季年报表</a>
+                                    </li>
+                                    <li><a href="/reports/showDetails">明细表</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <!-- <a href="login.html">
+                                    <i class="fa fa-sign-out"></i> 退出
+                                </a> -->
+                                <span th:inline="text">
+                                	Hello [[${#httpServletRequest.remoteUser}]]! 
+                                	<form th:action="@{/logout}" method="post">
+									   <button class="btn btn-primary btn-xs" type="submit">注销</button>
+									</form>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="wrapper wrapper-content animated fadeInDown">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>盘点信息管理</h5>
+                                </div>
+                                <div class="ibox-content">
+									<button type="button" class="btn btn-w-m btn-white" id="add">添加</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="delete">删除</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="search">搜索</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="reload">刷新</button>
+                                    <hr/>
+                                    <div class="jqGrid_wrapper">
+                                        <table id="table_list_2"></table>
+                                        <div id="pager_list_2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+    <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+
+    <!-- Custom and plugin javascript -->
+    <script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+    <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+    <!-- jqGrid -->
+    <script th:src="@{/js/plugins/jqgrid/i18n/grid.locale-cn.js}"></script>
+    <script th:src="@{/js/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+
+    <script th:src="@{/js/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    
+	<!-- layer -->
+	<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+    <!-- Page-Level Scripts -->
+    <script type="text/javascript">
+    $(document).ready(function () {
+	    $("#add").on('click', function(){
+        	layer.open({
+                type: 2,
+                title: '添加盘点信息',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['80%', '90%'],
+                content: 'addInventory'
+            });
+	    });
+	
+	
+	    $("#delete").on('click', function(){
+        	var selectedIDs = getSelectedRows();
+            var result = "";
+            for(var i in selectedIDs) {
+            	result += selectedIDs[i]+",";
+	            $.ajax({
+	        		url:"/inventory/deleteInventorys?ids="+result,
+	        		type:"GET",
+	        		dataType:"json",
+	        		success:function(arr) {
+	        			layer.msg(arr.msg);
+	        			$("#table_list_2").trigger("reloadGrid");
+	        		}
+        	   });
+            }
+	    });
+	
+	
+	    $("#reload").on("click",function () {
+        	$("#table_list_2").jqGrid('setGridParam',{  
+        		url:'http://localhost:9090/inventory/findAll'}).trigger("reloadGrid");
+	    });
+	    
+	    $("#search").on("click",function () {
+        	layer.open({
+                type: 2,
+                title: '搜索条件',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['600px', '100%'],
+                content: 'searchInventory'
+            });
+	    });
+    
+	    // Configuration for jqGrid Example 2
+        $("#table_list_2").jqGrid({
+            url: "http://localhost:9090/inventory/findAll",
+            mtype: "GET",
+            datatype: "json",
+            height: 550,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 20,
+            rowList: [10, 20, 30],
+            colNames: ['单号', '日期', '经办人', '备注'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    key: true
+                },
+                {
+                    name: 'date',
+                    index: 'date',
+                    sorttype: "date",
+                    formatter: "date",
+                    formatoptions: {srcformat:'Y-m-d',newformat:'Y-m-d'}
+                },
+                {
+                    name: 'user.name',
+                    index: 'user.name'
+                },
+                {
+                    name: 'remark',
+                    index: 'remark'
+                }
+            ],
+            multiselect: true,
+            pager: "#pager_list_2",
+            viewrecords: true,
+            caption: "盘点单列表",
+            hidegrid: false,
+            subGrid: true, // set the subGrid property to true to show expand buttons for each row            
+            subGridRowExpanded: showChildGrid
+        });
+    	
+	       // the event handler on expanding parent row receives two parameters
+        // the ID of the grid tow  and the primary key of the row
+        function showChildGrid(parentRowID, parentRowKey) {
+            var childGridID = parentRowID + "_table";
+            var childGridPagerID = parentRowID + "_pager";
+
+            // send the parent row primary key to the server so that we know which grid to show
+            //var childGridURL = parentRowKey+".json";
+            var childGridURL = "http://localhost:9090/inventory/showOneInItems";
+
+            // add a table and pager HTML elements to the parent grid row - we will render the child grid here
+            $('#' + parentRowID).append("<table id=" + childGridID + "></table><div id=" + childGridPagerID + "></div>");
+
+            $("#" + childGridID).jqGrid({
+                url: childGridURL,
+                postData:{'inventoryId':parentRowKey},
+                mtype: "GET",
+                datatype: "json",
+                colModel: [
+                    { label: '编号', name: 'id', index:'id', key: true, width: 75 },
+                    { label: '商品名称', name: 'good.name', index:'good.name', width: 100 },
+                    { label: '账面数量', name: 'num', index:'num', width: 100 },
+                    { label: '实点数量', name: 'checknum', index:'checknum', width: 100 },
+                ],
+                loadonce: true,
+                autowidth: true,
+                height: '100%',
+                pager: "#" + childGridPagerID
+            });
+
+        }
+
+
+
+        // Setup buttons
+        $("#table_list_2").jqGrid('navGrid', '#pager_list_2', {
+            edit: false,
+            add: false,
+            del: false,
+            search: false,
+            refresh: false
+        }, {
+            height: 200,
+            reloadAfterSubmit: true
+        });
+
+        // Add responsive to jqGrid
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table_list_2').setGridWidth(width);
+        });
+
+        function getSelectedRows() {
+            var grid = $("#table_list_2");
+
+            var rowKey = grid.getGridParam("selrow");
+
+            if (!rowKey)
+                alert("No rows are selected");
+            else {
+                var selectedIDs = grid.getGridParam("selarrrow");
+                return selectedIDs;
+            }
+        }
+        
+    });
+    </script>
+</body>
+</html>

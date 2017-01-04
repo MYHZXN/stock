@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" >
+  <head>
+    <title>单据</title>
+	
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet" />
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet" />
+    <link href="/js/plugins/fancybox/jquery.fancybox.css" th:href="@{/js/plugins/fancybox/jquery.fancybox.css}" rel="stylesheet" />
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet" />
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet" />
+
+  </head>
+  
+<body class="top-navigation">
+<div id="wrapper">
+
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>单据信息</h5>
+                        </div>
+                        <div class="ibox-content" >
+	                         <a class="fancybox" th:each="document:${documentsSrc}" th:href="${'/pic/'+document}" >
+	                                <img alt="image" th:src="${'/pic/'+document}" />
+                             </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Mainly scripts -->
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+<!-- Fancy box -->
+<script th:src="@{/js/plugins/fancybox/jquery.fancybox.js}"></script>
+
+<script>
+     $(document).ready(function () {
+         $('.fancybox').fancybox({
+              openEffect: 'none',
+              closeEffect: 'none'
+         });
+     });
+</script>
+</body>
+</html>

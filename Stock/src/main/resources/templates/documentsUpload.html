@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>单据上传</title>
+	
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet" />
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet" />
+    <link href="/css/plugins/iCheck/custom.css" th:href="@{/css/plugins/iCheck/custom.css}" rel="stylesheet" />
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet" />
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet" />
+    <link href="/css/plugins/dropzone/dropzone.css" th:href="@{/css/plugins/dropzone/dropzone.css}" rel="stylesheet" />
+  </head>
+  
+<body class="top-navigation">
+<div id="wrapper">
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>单据信息</h5>
+                        </div>
+                        <div class="ibox-content">
+                        	<form action="#" th:action="(${which} != null)? 'addRealInStock' : 'addRealOutStock'" id="stockForm" th:object="${instockForm}" method="post">
+                        		<input type="hidden" th:field="*{type}" />
+                        		<input type="hidden" th:field="*{date}" />
+                        		<input type="hidden" th:field="*{user}" />
+                        		<input type="hidden" th:field="*{documents}" />
+                        		<input type="hidden" th:field="*{remark}" />
+                        		<input type="hidden" th:field="*{goodIds}" />
+                        		<input type="hidden" th:field="*{nums}" />
+                        		<input type="hidden" th:field="*{worths}" />
+                        	</form>
+                            <form action="/documents/upload" id="myAwesomeDropzone" class="dropzone" enctype="multipart/form-data">
+							  <div class="fallback">
+							    <input name="file" type="file" multiple="multiple" />
+							  </div>
+							  <button type="button" class="btn btn-primary pull-right" id="uploadDJ" disabled="disabled">提交</button>
+							</form>
+                        </div>
+                   </div>
+                </div>
+            </div>
+         </div>
+    </div>    
+</div>e    
+	<!-- Mainly scripts -->
+	<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+	<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+	<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+	
+	<!-- Custom and plugin javascript -->
+	<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+	<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+	
+	<!-- dropzone -->
+	<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+	
+	<script type="text/javascript">
+	  // "myAwesomeDropzone" is the camelized version of the HTML element's ID
+	  // "myAwesomeDropzone" 是dropzone的HTML元素ID的驼峰命名
+	  Dropzone.options.myAwesomeDropzone = {
+			//指定上传图片的路径
+	        url: "/documents/upload",
+
+	        //添加上传取消和删除预览图片的链接，默认不添加
+	        addRemoveLinks: true,
+
+	        //关闭自动上传功能，默认会true会自动上传
+	        //也就是添加一张图片向服务器发送一次请求
+	        autoProcessQueue: false,
+
+	        //允许上传多个照片
+	        //uploadMultiple: true,
+
+	       //每次上传的最多文件数，经测试默认为2，坑啊
+	       //记得修改web.config 限制上传文件大小的节
+	       parallelUploads: 100,
+
+	       init: function () {
+	          	
+	    	   var pics = "";
+	    	   
+	    	   myDropzone = this; // closure
+			   
+	    	   //为上传按钮添加点击事件
+			   $("#uploadDJ").on("click",function(){
+				   //手动上传所有图片
+                 myDropzone.processQueue();
+			   });
+			   
+
+	           //当添加图片后的事件，上传按钮恢复可用
+	           this.on("addedfile", function () {
+	                $("#uploadDJ").removeAttr("disabled");
+	           });
+	           
+	           this.on("success", function(file,data) {
+	                console.log("File " + file.name + "uploaded");
+	                console.log(data.msg);
+	                pics += data.msg+"#"
+	            });
+
+	           //当上传完成后的事件，接受的数据为JSON格式
+	           this.on("complete", function (data) {
+	                 if (this.getUploadingFiles().length == 0) {
+	                	 if(this.getQueuedFiles().length == 0){
+		                     alert(pics); 
+		                     $("input[name='documents']").val(pics);
+		                     $("#stockForm").submit();
+	                	 }
+	                 }
+	           });
+
+	           //删除图片的事件，当上传的图片为空时，使上传按钮不可用状态
+	           this.on("removedfile", function () {
+	                 if (this.getAcceptedFiles().length === 0) {
+	                      $("#submit-all").attr("disabled", "disabled");
+	                 }
+	           });
+	       }
+	  };
+	</script>
+  </body>
+</html>

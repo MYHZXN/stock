@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>明细表</title>
+	
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet"/>
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet"/>
+
+	<!-- Data Tables -->
+    <link href="/css/plugins/dataTables/dataTables.bootstrap.css" 
+    	th:href="@{/css/plugins/dataTables/dataTables.bootstrap.css}" rel="stylesheet" />
+
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet"/>
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet"/>
+
+  </head>
+  
+  <body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom white-bg">
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <div class="navbar-header">
+                        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                            <i class="fa fa-reorder"></i>
+                        </button>
+                        <a href="/stock/index" class="navbar-brand">Stock</a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">信息管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/good/showGoodList">商品信息</a>
+                                    </li>
+                                    <li><a href="/good/showTypeList">商品类别信息</a>
+                                    </li>
+                                    <li><a href="/good/showUnitList">商品单位信息</a>
+                                    </li>
+                                    <li><a href="/user/showUserList">员工信息</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">仓库管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                   	<li><a href="/instock/showInStockList">入库单据</a>
+                                    </li>
+                                    <li><a href="/outstock/showOutStockList">出库单据</a>
+                                    </li>
+                                    <li><a href="/inventory/showInventoryList">盘点单据</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">分析统计<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/reports/showReports">月季年报表</a>
+                                    </li>
+                                    <li><a href="/reports/showDetails">明细表</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <!-- <a href="login.html">
+                                    <i class="fa fa-sign-out"></i> 退出
+                                </a> -->
+                                <span th:inline="text">
+                                	Hello [[${#httpServletRequest.remoteUser}]]! 
+                                	<form th:action="@{/logout}" method="post">
+									   <button class="btn btn-primary btn-xs" type="submit">注销</button>
+									</form>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="wrapper wrapper-content animated fadeInDown">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>明细表</h5>
+                                </div>
+                                <div class="ibox-content">
+                                	<table class="table table-striped table-bordered table-hover dataTables-example" id="mytable">
+	                                    <thead>
+	                                        <tr>
+	                                            <th>单号</th>
+	                                            <th>日期</th>
+	                                            <th>类型</th>
+	                                            <th>商品编号</th>
+	                                            <th>商品名称</th>
+	                                            <th>数量</th>
+	                                            <th>金额</th>
+	                                        </tr>
+	                                    </thead>
+	                                    <tbody>
+	                                    </tbody>
+	                                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Mainly scripts -->
+    <script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+    <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+    <!-- Data Tables -->
+    <script th:src="@{/js/plugins/dataTables/jquery.dataTables.js}"></script>
+    <script th:src="@{/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+	<!-- layer -->
+	<script th:src="@{/js/plugins/layer/layer.js}"></script>
+	
+    <!-- Custom and plugin javascript -->
+    <script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+    <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+    <script th:src="@{/js/stock/analysereports.js}"></script>
+    
+    <!-- Page-Level Scripts -->
+    <script>
+
+        $(document).ready(function () {
+        	showDetails()
+        });
+    	
+    </script>
+  </body>
+</html>

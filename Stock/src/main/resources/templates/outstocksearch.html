@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html  lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit" />
+
+    <title>搜索条件</title>
+
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet" />
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet" />
+    <link href="/css/plugins/iCheck/custom.css" th:href="@{/css/plugins/iCheck/custom.css}" rel="stylesheet" />
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet" />
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet" />
+</head>
+  
+<body class="top-navigation">
+<div id="wrapper">
+
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>查询条件</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <form method="get" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">出库单号</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="id" id="id"/>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">出库类型</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-lg-4 m-l-n">
+                                            <select class="form-control m-b" name="type" id="type">
+                                            	<option value="无">请选择</option>
+                                                <option th:value="领用出库">领用出库</option>
+                                                <option th:value="销售出库">销售出库</option>
+                                                <option th:value="采购退货出库">采购退货出库</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">出库日期</label>
+                                    <div class="col-sm-10">
+                                        <div class="input-group ">
+                                           <div class="input-group-btn" style="width:100px">
+                                            	<select class="form-control m-b" name="date_condition" id="date_condition">
+                                            		<option value="eq" selected="selected">这天</option>
+                                            		<option value="ge">之后</option>
+                                            		<option value="le">之前</option>
+                                            	</select>
+                                            </div>
+                                            <input type="text" class="laydate-icon form-control layer-date" name="date" id="date" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">经办人</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-lg-4 m-l-n">
+                                            <select class="form-control m-b" name="user" id="user">
+                                                <option th:text="请选择" value="0"></option>
+                                                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-primary" type="button" id="search">搜索</button>
+                                        <button class="btn btn-white" type="reset">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Mainly scripts -->
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+<!-- layerDate plugin javascript -->
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+
+<!-- layer -->
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+<!-- iCheck -->
+<script th:src="@{/js/plugins/iCheck/icheck.min.js}"></script>
+<script>
+
+    $(document).ready(function () {
+        //外部js调用
+        laydate({
+            elem: '#date', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+            event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+        });
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    });
+    
+    $("#search").on('click',function(){
+    	//
+    	var id = $("#id").val();
+    	var type = $("#type").val();
+    	var date = $("#date").val();
+    	var date_condition = $("#date_condition").val();
+    	var user = $("#user").val();
+    	
+    	//alert(id+barcode+name+in_price+in_condition+out_price+out_condition+cur_stock+stock_condition);
+    	parent.$("#table_list_2").jqGrid('setGridParam',{  
+    		url:'http://localhost:9090/outstock/findByCondition',
+            datatype:'json',  
+            postData:{'id':id,
+            		  'type':type,
+            		  'date':date,
+            		  'user':user,
+            		  'remark':date_condition}, //发送数据  
+            page:1  
+        }).trigger("reloadGrid"); //重新载入  
+        
+    	parent.layer.closeAll();
+    });
+    
+    
+    
+</script>
+
+
+</body>
+</html>

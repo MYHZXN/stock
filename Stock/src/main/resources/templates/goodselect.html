@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>选择商品</title>
+    
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet"/>
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet"/>
+
+    <link href="/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"
+    	th:href="@{/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css}" rel="stylesheet"/>
+
+    <!-- Data Tables -->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css"
+    	th:href="@{/css/plugins/jqgrid/ui.jqgrid.css}" rel="stylesheet"/>
+
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet"/>
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet"/>
+  </head>
+  
+<body class="top-navigation">
+	<div id="wrapper">
+	    <div id="page-wrapper" class="gray-bg">
+	        <div class="wrapper wrapper-content animated fadeInDown">
+	                <div class="row">
+	                    <div class="col-lg-12">
+	                        <h5>选择商品</h5>
+	                        <div class="jqGrid_wrapper">
+	                            <button type="button" class="btn btn-w-m btn-white" id="add">添加所选</button>
+	                            <button type="button" class="btn btn-w-m btn-white" id="search">搜索</button>
+	                            <hr/>
+	                            <div class="jqGrid_wrapper">
+		                            <table id="table_list_2"></table>
+		                            <div id="pager_list_2"></div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	        </div>
+	    </div>
+	</div>
+
+    <!-- Mainly scripts -->
+    <script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+    <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+
+    <!-- Custom and plugin javascript -->
+    <script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+    <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+    <!-- jqGrid -->
+    <script th:src="@{/js/plugins/jqgrid/i18n/grid.locale-cn.js}"></script>
+    <script th:src="@{/js/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+
+    <script th:src="@{/js/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    
+	<!-- layer -->
+	<script th:src="@{/js/plugins/layer/layer.js}"></script>
+	
+	<script type="text/javascript" th:inline="javascript">
+		$(document).ready(function () {
+			
+	        $("#add").on('click', function(){
+	            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	            var selectedIDs = getSelectedRows();
+	            var result = "";
+	            for (var i in selectedIDs) {
+	                var grid = $("#table_list_2");
+	                var rowData = grid.jqGrid('getRowData',selectedIDs[i]);
+					var inOrOut = /*[[${inOrOut}]]*/;
+	                if(inOrOut == "out"){
+	                	if(rowData.cur_stock == 0){
+							alert(rowData.id+" "+rowData.name+" "+"当前库存不够！");
+							continue;
+	                	}
+					}
+	                var flag = false;
+		            parent.$("input[name='goodIds']").each(function(){
+		                if($(this).val()==rowData.id){
+			                 var price = rowData.in_price;
+			                 var worth = price.substring(1);
+		                     n = $(this).parents("tr").index();  // 获取checkbox所在行的顺序
+		                     n = n + 1; //除去标题栏
+		                     var before_num = parent.$("table#goodtable").find("tr:eq("+n+")").find("td:eq(4)").children('input').val();
+		                     var after_num = parseInt(before_num)+1;
+		                     parent.$("table#goodtable").find("tr:eq("+n+")").find("td:eq(4)").children('input').val(after_num);
+		                     var worths = parseFloat(worth*after_num);
+		                     parent.$("table#goodtable").find("tr:eq("+n+")").find("td:eq(5)").children('input').val(worths);
+		                     parent.$("table#goodtable").find("tr:eq("+n+")").find("td:eq(5)").children('span').text("¥"+worths);
+		                     flag = true;
+		                }
+		            });
+	           
+		            if(flag != true){
+		                var price = rowData.in_price;
+		                var worth = price.substring(1);
+		                parent.$("table#goodtable").append(
+		                        '<tr>'+
+		                        '<td>' +
+		                        '<input type="checkbox" class="i-checks" name="select" />' +
+		                        '</td>'+
+		                        '<td><input type="hidden" name="goodIds" id="goodIds" value="'+rowData.id+'" />'+rowData.id+'</td>'+
+		                        '<td>'+rowData.name+'</td>'+
+		                        '<td><span>'+rowData.in_price+'</span></td>'+
+		                        '<td><span>'+rowData.cur_stock+'</span></td>'+
+		                        '<td><input type="number" name="nums" id="nums" class="form-control" value="1" min="1" oninput="changeWorths(this,'+worth+')" /></td>'+
+		                        '<td><input type="hidden" name="worths" id="worths" value="'+worth+'" /><span>'+rowData.in_price+'</span></td>'+
+		                        '</tr>');
+
+
+
+			            parent.$('.i-checks').iCheck({
+			                checkboxClass: 'icheckbox_square-green',
+			                radioClass: 'iradio_square-green',
+			            });
+		            }
+		            
+		            
+	            }
+	            parent.layer.close(index);
+	        });
+	        
+	        $("#search").on('click',function(){
+	        	layer.open({
+	                type: 2,
+	                title: '搜索条件',
+	                shadeClose: true,
+	                shade: 0.8,
+	                area: ['600px', '100%'],
+	                content: '/good/searchGood'
+	            });
+	        });
+	        
+	     	// Configuration for jqGrid Example 2
+            $("#table_list_2").jqGrid({
+                url: "http://localhost:9090/good/findAll",
+                mtype: "GET",
+                datatype: "json",
+                height: 550,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                colNames: ['编号', '条形码', '名称', '规格', '类型','单位','入库价','出库价','当前库存','备注'],
+                colModel: [
+                    {
+                        name: 'id',
+                        index: 'id',
+                        width: 110,
+                    },
+                    {
+                        name: 'barcode',
+                        index: 'barcode',
+                        width: 90,
+                    },
+                    {
+                        name: 'name',
+                        index: 'name',
+                        width: 100
+                    },
+                    {
+                        name: 'model',
+                        index: 'model',
+                        width: 80,
+                    },
+                    {
+                        name: 'type.name',
+                        index: 'type.name',
+                        width: 80,
+                    },
+                    {
+                       name: 'measure_unit.name',
+                        index: 'measure_unit.name',
+                        width: 50,
+                    },
+                    {
+                        name: 'in_price',
+                        index: 'in_price',
+                        formatter: priceFmatter,
+                        sorttype:'number',
+                        width: 50,
+                    },
+                    {
+                        name: 'out_price',
+                        index: 'out_price',
+                        formatter: priceFmatter,
+                        sorttype:'number',
+                        width: 50,
+                    },
+                    {
+                        name: 'cur_stock',
+                        index: 'cur_stock',
+                        sorttype:'integer',
+                        width: 50,
+                    },
+                    {
+                        name: 'remark',
+                        index: 'remark',
+                        width: 100,
+                    }
+                ],
+                multiselect: true,
+                multiSort: true,
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "仓库商品列表",
+                hidegrid: false
+            });
+
+            // Setup buttons
+            $("#table_list_2").jqGrid('navGrid', '#pager_list_2', {
+                edit: false,
+                add: false,
+                del: false,
+                search: false,
+                refresh: false
+            }, {
+                height: 200,
+                reloadAfterSubmit: true
+            });
+
+            // Add responsive to jqGrid
+            $(window).bind('resize', function () {
+                var width = $('.jqGrid_wrapper').width();
+                $('#table_list_2').setGridWidth(width);
+            });
+            
+            function priceFmatter(cellvalue, options, rowObject){  
+			    return "&yen;"+cellvalue/100;  
+			}
+			
+			
+	        function getSelectedRows() {
+	            var grid = $("#table_list_2");
+	            var rowKey = grid.getGridParam("selrow");
+
+	            if (!rowKey)
+	                alert("No rows are selected");
+	            else {
+	                var selectedIDs = grid.getGridParam("selarrrow");
+	                return selectedIDs;
+	            }
+	        }
+	     	
+		});
+	</script>
+
+</body>
+</html>

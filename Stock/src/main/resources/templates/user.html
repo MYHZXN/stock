@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="renderer" content="webkit"/>
+
+    <title>员工信息</title>
+
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet"/>
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet"/>
+
+    <link href="/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"
+    	th:href="@{/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css}" rel="stylesheet"/>
+
+    <!-- Data Tables -->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css"
+    	th:href="@{/css/plugins/jqgrid/ui.jqgrid.css}" rel="stylesheet"/>
+
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet"/>
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet"/>
+</head>
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom white-bg">
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <div class="navbar-header">
+                        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                            <i class="fa fa-reorder"></i>
+                        </button>
+                        <a href="/stock/index" class="navbar-brand">Stock</a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">信息管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/good/showGoodList">商品信息</a>
+                                    </li>
+                                    <li><a href="/good/showTypeList">商品类别信息</a>
+                                    </li>
+                                    <li><a href="/good/showUnitList">商品单位信息</a>
+                                    </li>
+                                    <li><a href="/user/showUserList">员工信息</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">仓库管理<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/instock/showInStockList">入库单据</a>
+                                    </li>
+                                    <li><a href="/outstock/showOutStockList">出库单据</a>
+                                    </li>
+                                    <li><a href="/inventory/showInventoryList">盘点单据</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a aria-expanded="false" role="button" href="##" class="dropdown-toggle" data-toggle="dropdown">分析统计<span class="caret"></span></a>
+                                <ul role="menu" class="dropdown-menu">
+                                    <li><a href="/reports/showReports">月季年报表</a>
+                                    </li>
+                                    <li><a href="/reports/showDetails">明细表</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <!-- <a href="login.html">
+                                    <i class="fa fa-sign-out"></i> 退出
+                                </a> -->
+                                <span th:inline="text">
+                                	Hello [[${#httpServletRequest.remoteUser}]]! 
+                                	<form th:action="@{/logout}" method="post">
+									   <button class="btn btn-primary btn-xs" type="submit">注销</button>
+									</form>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="wrapper wrapper-content animated fadeInDown">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>用户信息管理</h5>
+                                </div>
+                                <div class="ibox-content">
+									<button type="button" class="btn btn-w-m btn-white" id="add">添加</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="edit">编辑</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="delete">删除</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="search">搜索</button>
+                                    <button type="button" class="btn btn-w-m btn-white" id="reload">刷新</button>
+                                    <hr/>
+                                    <div class="jqGrid_wrapper">
+                                        <table id="table_list_2"></table>
+                                        <div id="pager_list_2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+    <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+
+    <!-- Custom and plugin javascript -->
+    <script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+    <script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+    <!-- jqGrid -->
+    <script th:src="@{/js/plugins/jqgrid/i18n/grid.locale-cn.js}"></script>
+    <script th:src="@{/js/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+
+    <script th:src="@{/js/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    
+	<!-- layer -->
+	<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function () {
+
+	        $("#add").on('click', function(){
+	            layer.open({
+	                type: 2,
+	                title: '新增员工',
+	                shadeClose: true,
+	                shade: 0.8,
+	                area: ['600px', '100%'],
+	                content: 'addUser',
+		            cancel: function(index){
+		                $("#table_list_2").trigger("reloadGrid");
+		            }
+	            });
+	
+	        });
+	        
+	        
+	        $("#edit").on('click', function(){
+	            var selectedIDs = getSelectedRows();
+	            var url;
+	            if(selectedIDs.length >= 2){
+	                alert("more rows are selected")
+	            }else{
+	                url = "editUser/"+selectedIDs[0];
+	                layer.open({
+	                    type: 2,
+	                    title: '编辑员工',
+	                    shadeClose: true,
+	                    shade: 0.8,
+	                    area: ['600px', '100%'],
+	                    content: url
+	                });
+	            }
+	
+	        });
+
+	        $("#delete").on('click', function(){
+	        	var selectedIDs = getSelectedRows();
+	            var result = "";
+	            for(var i in selectedIDs) {
+	            	result += selectedIDs[i]+",";
+		            $.ajax({
+		        		url:"/user/deleteUsers?ids="+result,
+		        		type:"GET",
+		        		dataType:"json",
+		        		success:function(arr) {
+		        			layer.msg(arr.msg);
+		        			$("#table_list_2").trigger("reloadGrid");
+		        		}
+	        	   });
+	            }
+	        });	        
+	        
+	        
+	        $("#search").on('click',function(){
+	        	layer.open({
+	                type: 2,
+	                title: '搜索条件',
+	                shadeClose: true,
+	                shade: 0.8,
+	                area: ['600px', '100%'],
+	                content: 'searchUser'
+	            });
+	        });
+	        
+	        $("#reload").on('click', function(){
+	        	$("#table_list_2").jqGrid('setGridParam',{  
+	        		url:'http://localhost:9090/user/findAll'}).trigger("reloadGrid");
+	        });
+	        
+
+            // Configuration for jqGrid Example 2
+            $("#table_list_2").jqGrid({
+                url: "http://localhost:9090/user/findAll",
+                mtype: "GET",
+                datatype: "json",
+                height: 550,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                colNames: ['员工编号', '姓名', '可操作的商品', '可操作的商品类型', '权限'],
+                colModel: [
+                    {
+                        name: 'id',
+                        index: 'id',
+                        width: 110,
+                    },
+                    {
+                        name: 'name',
+                        index: 'name',
+                        width: 90,
+                    },
+                    {
+                        name: 'operate_good_id',
+                        index: 'operate_good_id',
+                        width: 100
+                    },
+                    {
+                        name: 'operate_good_type',
+                        index: 'operate_good_type',
+                        width: 80,
+                    },
+                    {
+                        name: 'role',
+                        index: 'role',
+                        width: 80,
+                    }
+                ],
+                multiselect: true,
+                multiSort: true,
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "员工列表",
+                hidegrid: false
+            });
+
+
+            // Setup buttons
+            $("#table_list_2").jqGrid('navGrid', '#pager_list_2', {
+                edit: false,
+                add: false,
+                del: false,
+                search: false,
+                refresh: false
+            }, {
+                height: 200,
+                reloadAfterSubmit: true
+            });
+
+            // Add responsive to jqGrid
+            $(window).bind('resize', function () {
+                var width = $('.jqGrid_wrapper').width();
+                $('#table_list_2').setGridWidth(width);
+            });
+            
+	        function getSelectedRows() {
+	            var grid = $("#table_list_2");
+	            var rowKey = grid.getGridParam("selrow");
+
+	            if (!rowKey)
+	                alert("No rows are selected");
+	            else {
+	                var selectedIDs = grid.getGridParam("selarrrow");
+	                return selectedIDs;
+	            }
+	        }
+        });
+    </script>
+</body>
+</html>

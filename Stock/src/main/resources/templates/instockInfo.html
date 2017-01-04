@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>入库信息</title>
+	
+    <meta name="content-type" content="text/html; charset=UTF-8" />
+    
+    <link href="/css/bootstrap.min.css?v=3.4.0" th:href="@{/css/bootstrap.min.css?v=3.4.0}" rel="stylesheet" />
+    <link href="/font-awesome/css/font-awesome.css?v=4.3.0" th:href="@{/font-awesome/css/font-awesome.css?v=4.3.0}" rel="stylesheet" />
+    <link href="/css/plugins/iCheck/custom.css" th:href="@{/css/plugins/iCheck/custom.css}" rel="stylesheet" />
+    <link href="/css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet" />
+    <link href="/css/style.css?v=2.2.0" th:href="@{/css/style.css?v=2.2.0}" rel="stylesheet" />
+  </head>
+  
+<body class="top-navigation">
+<div id="wrapper">
+
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>入库单信息</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <form method="post" action="#" th:action="addInStock" th:object="${instockForm}" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">入库类型</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-lg-4 m-l-n">
+                                            <select class="form-control m-b" th:field="*{type}">
+                                                <option th:value="采购入库">采购入库</option>
+                                                <option th:value="生产入库">生产入库</option>
+                                                <option th:value="退货入库">退货入库</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">入库日期</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="laydate-icon form-control layer-date" name="date" id="date" />
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">经办人</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-lg-4 m-l-n">
+                                            <select class="form-control m-b" th:field="*{user}">
+                                                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">备注</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" th:field="*{remark}"/>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">入库商品</label>
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <div class="col-sm-5 m-b-xs">
+                                                <button type="button" class="btn btn-primary btn-sm" id="addgood">添加商品</button>
+                                                <button type="button" class="btn btn-danger btn-sm" id="delselected">删除所选商品</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="goodtable">
+                                                <thead>
+                                                <tr>
+
+                                                    <th></th>
+                                                    <th>商品编号</th>
+                                                    <th>名称</th>
+                                                    <th>入库价</th>
+                                                    <th>当前库存</th>
+                                                    <th>数量</th>
+                                                    <th>金额</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-primary" type="submit">下一步</button>
+                                        <button class="btn btn-white" type="submit">取消</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<!-- Mainly scripts -->
+<script th:src="@{/js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.4.0}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+
+<!-- Custom and plugin javascript -->
+<script th:src="@{/js/hplus.js?v=2.2.0}"></script>
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+
+<!-- layerDate plugin javascript -->
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+
+<!-- layer -->
+<script th:src="@{/js/plugins/layer/layer.js}"></script>
+
+<!-- iCheck -->
+<script th:src="@{/js/plugins/iCheck/icheck.min.js}"></script>
+<script>
+	function changeWorths(obj,price){
+		var tr = $(obj).parents("tr");
+		//alert($(obj).parents("tr").index());
+		var num = $(obj).val();
+		var worths = parseFloat(price*num);
+		$(tr).find("td:eq(6)").children('input').val(worths);
+		$(tr).find("td:eq(6)").children('span').text("¥"+worths);
+	}
+
+    $(document).ready(function () {
+    	
+        //外部js调用
+        laydate({
+            elem: '#date', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+            event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+        });
+    	
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        
+        $("#addgood").click(function () {
+            layer.open({
+                type: 2,
+                title: '商品列表',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['100%', '70%'],
+                content: 'selectGood'
+            });
+        });
+        
+        
+        $("#delselected").click(function() {
+
+            $("input[name='select']:checked").each(function() { // 遍历选中的checkbox
+                n = $(this).parents("tr").index();  // 获取checkbox所在行的顺序
+                n = n + 1; //除去标题栏
+                $("table#goodtable").find("tr:eq("+n+")").remove();
+            });
+        });
+        
+        
+
+    });
+</script>
+</body>
+</html>
